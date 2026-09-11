@@ -82,7 +82,7 @@ export default function CartDrawer() {
                               <Plus size={14} />
                             </button>
                           </div>
-                          <p className="font-black text-gray-900 dark:text-white">${(parseFloat(item.price) * item.quantity).toFixed(2)}</p>
+                          <p className="font-black text-gray-900 dark:text-white">Rs {(parseFloat(item.price) * item.quantity).toFixed(2)}</p>
                         </div>
                       </div>
                     </motion.div>
@@ -96,7 +96,7 @@ export default function CartDrawer() {
                 <div className="mb-6 space-y-3">
                   <div className="flex justify-between text-gray-500 dark:text-gray-400">
                     <span>Subtotal</span>
-                    <span className="font-medium">${getCartTotal().toFixed(2)}</span>
+                    <span className="font-medium">Rs {getCartTotal().toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-gray-500 dark:text-gray-400">
                     <span>Shipping</span>
@@ -104,7 +104,7 @@ export default function CartDrawer() {
                   </div>
                   <div className="flex justify-between border-t border-gray-200 pt-3 dark:border-gray-800">
                     <span className="text-lg font-bold text-gray-900 dark:text-white">Total</span>
-                    <span className="text-2xl font-black text-primary">${getCartTotal().toFixed(2)}</span>
+                    <span className="text-2xl font-black text-primary">Rs {getCartTotal().toFixed(2)}</span>
                   </div>
                 </div>
                 <button

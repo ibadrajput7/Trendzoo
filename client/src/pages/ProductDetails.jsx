@@ -102,7 +102,7 @@ export default function ProductDetails() {
 
           <div className="mb-8 flex items-baseline gap-4">
             <span className="text-4xl font-black text-gray-900 dark:text-white">
-              ${parseFloat(product.price).toFixed(2)}
+              Rs {parseFloat(product.price).toFixed(2)}
             </span>
           </div>
 

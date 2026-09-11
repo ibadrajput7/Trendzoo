@@ -12,6 +12,13 @@ import Checkout from './pages/Checkout.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 
+import Shop from './pages/Shop.jsx'
+import Categories from './pages/Categories.jsx'
+import Deals from './pages/Deals.jsx'
+import NewArrivals from './pages/NewArrivals.jsx'
+import About from './pages/About.jsx'
+import Contact from './pages/Contact.jsx'
+
 import AdminLayout from './components/AdminLayout.jsx'
 
 // Dashboard Pages
@@ -30,6 +37,12 @@ const router = createBrowserRouter(
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
+        <Route path="shop" element={<Shop />} />
+        <Route path="categories" element={<Categories />} />
+        <Route path="deals" element={<Deals />} />
+        <Route path="new-arrivals" element={<NewArrivals />} />
+        <Route path="about" element={<About />} />
+        <Route path="contact" element={<Contact />} />
         <Route path="product/:id" element={<ProductDetails />} />
         <Route path="checkout" element={<Checkout />} />
       </Route>

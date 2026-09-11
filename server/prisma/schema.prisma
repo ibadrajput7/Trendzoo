@@ -35,6 +35,7 @@ model Product {
   stock       Int      @default(0)
   status      String   @default("Active") // Active, Low Stock, Out of Stock
   imageUrl    String?
+  images      String[] @default([])
   categoryId  Int
   category    Category @relation(fields: [categoryId], references: [id])
   createdAt   DateTime @default(now())
@@ -42,11 +43,14 @@ model Product {
 }
 
 model Order {
-  id            Int      @id @default(autoincrement())
-  customerName  String
-  customerEmail String?
-  totalAmount   Float
-  status        String   @default("Pending") // Pending, Processing, Shipped, Delivered, Cancelled
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  customerName    String
+  customerEmail   String?
+  shippingAddress String?
+  paymentMethod   String   @default("COD")
+  totalAmount     Float
+  status          String   @default("Pending") // Pending, Processing, Shipped, Delivered, Cancelled
+  items           Json     @default("[]")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

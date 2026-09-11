@@ -35,13 +35,15 @@ export const createOrder = async (req, res) => {
   try {
     const { customerName, email, address, totalAmount, items } = req.body;
     
-    // In a real app we'd also save the order items, but for now we'll 
-    // just store the order and the customer details as requested in the schema
     const order = await prisma.order.create({
       data: {
         customerName,
+        customerEmail: email,
+        shippingAddress: address,
         totalAmount: parseFloat(totalAmount),
-        status: 'Pending',
+        items: items || [],
+        paymentMethod: "COD",
+        status: "Pending"
       },
     });
 

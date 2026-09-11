@@ -1,14 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Eye, ChevronRight } from 'lucide-react';
+import { Eye, ChevronRight, Loader2 } from 'lucide-react';
+
+const API_URL = import.meta.env.VITE_BACKEND_URL + '/api/v1/orders';
 
 export default function Orders() {
-  const dummyOrders = [
-    { id: '#ORD-7829', customer: 'Alice Johnson', date: 'Oct 24, 2026', total: '$129.00', status: 'Delivered' },
-    { id: '#ORD-7830', customer: 'Bob Smith', date: 'Oct 24, 2026', total: '$89.00', status: 'Processing' },
-    { id: '#ORD-7831', customer: 'Charlie Davis', date: 'Oct 23, 2026', total: '$249.50', status: 'Shipped' },
-    { id: '#ORD-7832', customer: 'Diana Prince', date: 'Oct 22, 2026', total: '$45.00', status: 'Cancelled' },
-  ];
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const fetchOrders = async () => {
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      if (data.success) {
+        setOrders(data.data);
+      }
+    } catch (err) {
+      console.error("Failed to load orders", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateStatus = async (id, newStatus) => {
+    try {
+      const res = await fetch(`${API_URL}/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setOrders(orders.map(order => order.id === id ? { ...order, status: newStatus } : order));
+      }
+    } catch (err) {
+      console.error("Failed to update status", err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-7xl">
@@ -33,39 +73,55 @@ export default function Orders() {
               </tr>
             </thead>
             <tbody>
-              {dummyOrders.map((order, index) => (
+              {orders.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500 font-medium">No orders found.</td>
+                </tr>
+              ) : orders.map((order, index) => (
                 <motion.tr 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                   key={order.id} 
-                  className="group border-b border-gray-100 last:border-0 hover:bg-gray-50/50 dark:border-gray-800 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                  className="group border-b border-gray-100 last:border-0 hover:bg-gray-50/50 dark:border-gray-800 dark:hover:bg-white/5 transition-colors"
                 >
                   <td className="whitespace-nowrap px-6 py-5 font-bold text-gray-900 dark:text-white">
-                    {order.id}
+                    #ORD-{order.id}
                   </td>
                   <td className="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary dark:bg-primary/20">
-                        {order.customer.charAt(0)}
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary dark:bg-primary/20 uppercase">
+                        {order.customerName?.charAt(0) || 'U'}
                       </div>
-                      {order.customer}
+                      <div>
+                        <div>{order.customerName}</div>
+                        <div className="text-xs text-gray-400 font-normal">{order.customerEmail}</div>
+                      </div>
                     </div>
                   </td>
-                  <td className="px-6 py-5 text-gray-500">{order.date}</td>
-                  <td className="px-6 py-5 font-bold text-gray-900 dark:text-white">{order.total}</td>
+                  <td className="px-6 py-5 text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td className="px-6 py-5 font-bold text-gray-900 dark:text-white">Rs {parseFloat(order.totalAmount).toFixed(2)}</td>
                   <td className="px-6 py-5">
-                    <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${
-                      order.status === 'Delivered' ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' :
-                      order.status === 'Processing' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
-                      order.status === 'Shipped' ? 'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400' :
-                      'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
-                    }`}>
-                      {order.status}
-                    </span>
+                    <select
+                      value={order.status}
+                      onChange={(e) => updateStatus(order.id, e.target.value)}
+                      className={`cursor-pointer rounded-full px-3 py-1 text-xs font-bold outline-none border-none appearance-none ${
+                        order.status === 'Delivered' ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' :
+                        order.status === 'Processing' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                        order.status === 'Shipped' ? 'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400' :
+                        order.status === 'Cancelled' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
+                        'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-400'
+                      }`}
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="Processing">Processing</option>
+                      <option value="Shipped">Shipped</option>
+                      <option value="Delivered">Delivered</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
                   </td>
                   <td className="px-6 py-5 text-right">
-                    <button className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition-colors group-hover:bg-white group-hover:text-primary dark:text-gray-400 dark:group-hover:bg-gray-800 dark:group-hover:text-primary">
+                    <button className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition-colors hover:bg-white hover:text-primary dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-primary">
                       View <ChevronRight size={16} />
                     </button>
                   </td>

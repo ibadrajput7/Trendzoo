@@ -9,7 +9,7 @@ export default function DashboardHome() {
   const stats = [
     { name: 'Total Users', value: '1,234', icon: Users, change: '+12%', changeType: 'increase' },
     { name: 'Total Products', value: '456', icon: Package, change: '+5%', changeType: 'increase' },
-    { name: 'Revenue', value: '$12,345', icon: LayoutDashboard, change: '+23%', changeType: 'increase' },
+    { name: 'Revenue', value: 'Rs 12,345', icon: LayoutDashboard, change: '+23%', changeType: 'increase' },
   ];
 
   return (

@@ -173,7 +173,7 @@ export default function ViewProducts() {
                     </div>
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-600 dark:text-gray-300">{product.category?.name || 'Uncategorized'}</td>
-                  <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">${parseFloat(product.price).toFixed(2)}</td>
+                  <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">Rs {parseFloat(product.price).toFixed(2)}</td>
                   <td className="px-6 py-4 font-medium text-gray-600 dark:text-gray-300">{product.stock}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${
@@ -217,7 +217,7 @@ export default function ViewProducts() {
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Price ($)</label>
+              <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Price (Rs)</label>
               <input
                 type="number" step="0.01" value={editPrice} onChange={(e) => setEditPrice(e.target.value)} required
                 className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 font-medium text-gray-900 outline-none transition-all focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-primary"

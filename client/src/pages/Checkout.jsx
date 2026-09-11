@@ -207,7 +207,7 @@ export default function Checkout() {
                     <h4 className="font-bold text-gray-900 dark:text-white line-clamp-1 text-sm">{item.name}</h4>
                     <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                   </div>
-                  <p className="font-bold text-gray-900 dark:text-white">${(parseFloat(item.price) * item.quantity).toFixed(2)}</p>
+                  <p className="font-bold text-gray-900 dark:text-white">Rs {(parseFloat(item.price) * item.quantity).toFixed(2)}</p>
                 </div>
               ))}
             </div>
@@ -215,7 +215,7 @@ export default function Checkout() {
             <div className="space-y-4 border-t border-gray-200 pt-6 dark:border-gray-800">
               <div className="flex justify-between text-gray-500 dark:text-gray-400">
                 <span className="font-medium">Subtotal</span>
-                <span className="font-bold text-gray-900 dark:text-white">${getCartTotal().toFixed(2)}</span>
+                <span className="font-bold text-gray-900 dark:text-white">Rs {getCartTotal().toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-gray-500 dark:text-gray-400">
                 <span className="font-medium">Shipping</span>
@@ -223,12 +223,12 @@ export default function Checkout() {
               </div>
               <div className="flex justify-between text-gray-500 dark:text-gray-400">
                 <span className="font-medium">Taxes</span>
-                <span className="font-bold text-gray-900 dark:text-white">$0.00</span>
+                <span className="font-bold text-gray-900 dark:text-white">Rs 0.00</span>
               </div>
               
               <div className="border-t border-gray-200 pt-4 dark:border-gray-800 flex justify-between">
                 <span className="text-xl font-black text-gray-900 dark:text-white">Total</span>
-                <span className="text-3xl font-black text-primary">${getCartTotal().toFixed(2)}</span>
+                <span className="text-3xl font-black text-primary">Rs {getCartTotal().toFixed(2)}</span>
               </div>
             </div>
           </div>

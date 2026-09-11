@@ -14,8 +14,8 @@ export default function AddProduct() {
   const [categoryId, setCategoryId] = useState('');
   const [status, setStatus] = useState('Active');
   
-  const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [images, setImages] = useState([]);
+  const [previews, setPreviews] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
@@ -37,11 +37,17 @@ export default function AddProduct() {
   }, []);
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      setPreview(URL.createObjectURL(file));
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+      setImages(prev => [...prev, ...files]);
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+      setPreviews(prev => [...prev, ...newPreviews]);
     }
+  };
+
+  const removeImage = (index) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+    setPreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -61,8 +67,10 @@ export default function AddProduct() {
     formData.append('stock', stock || 0);
     formData.append('categoryId', categoryId);
     formData.append('status', status);
-    if (image) {
-      formData.append('image', image);
+    if (images && images.length > 0) {
+      images.forEach(img => {
+        formData.append('images', img);
+      });
     }
 
     try {
@@ -81,8 +89,8 @@ export default function AddProduct() {
         setStock('');
         setCategoryId('');
         setStatus('Active');
-        setImage(null);
-        setPreview(null);
+        setImages([]);
+        setPreviews([]);
       } else {
         setMessage({ text: data.message || 'Failed to create product.', type: 'error' });
       }
@@ -138,29 +146,32 @@ export default function AddProduct() {
           {/* Media */}
           <div className="rounded-3xl border border-gray-200/50 bg-white/50 p-8 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-black/20">
             <h3 className="mb-6 text-xl font-bold text-gray-900 dark:text-white">Media</h3>
-            <label className="group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-3xl border-2 border-dashed border-gray-300 bg-gray-50/50 py-16 transition-all hover:border-primary hover:bg-primary/5 dark:border-gray-700 dark:bg-gray-800/50 dark:hover:border-primary dark:hover:bg-primary/10">
-              {preview ? (
-                <img src={preview} alt="Preview" className="absolute inset-0 h-full w-full object-cover" />
-              ) : (
-                <>
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 text-gray-500 transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-white dark:bg-gray-700 dark:text-gray-400">
-                    <UploadCloud size={28} />
+            
+            {previews.length > 0 && (
+              <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
+                {previews.map((src, idx) => (
+                  <div key={idx} className="relative aspect-square overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700">
+                    <img src={src} alt={`Preview ${idx}`} className="h-full w-full object-cover" />
+                    <button 
+                      type="button" 
+                      onClick={() => removeImage(idx)}
+                      className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-red-500/90 text-white shadow-lg backdrop-blur-md transition-colors hover:bg-red-600"
+                    >
+                      &times;
+                    </button>
                   </div>
-                  <p className="font-bold text-gray-900 dark:text-white text-lg">Click to browse your files</p>
-                  <p className="mt-2 text-sm text-gray-500">Supports JPG, PNG, WEBP</p>
-                </>
-              )}
-              <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-            </label>
-            {preview && (
-              <button 
-                type="button"
-                onClick={() => { setImage(null); setPreview(null); }}
-                className="mt-4 w-full rounded-xl bg-red-100 py-3 text-sm font-bold text-red-600 transition-colors hover:bg-red-200 dark:bg-red-500/20 dark:text-red-400 dark:hover:bg-red-500/30"
-              >
-                Remove Image
-              </button>
+                ))}
+              </div>
             )}
+
+            <label className="group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-3xl border-2 border-dashed border-gray-300 bg-gray-50/50 py-12 transition-all hover:border-primary hover:bg-primary/5 dark:border-gray-700 dark:bg-gray-800/50 dark:hover:border-primary dark:hover:bg-primary/10">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 text-gray-500 transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-white dark:bg-gray-700 dark:text-gray-400">
+                <UploadCloud size={28} />
+              </div>
+              <p className="font-bold text-gray-900 dark:text-white text-lg">Click to browse your files</p>
+              <p className="mt-2 text-sm text-gray-500">Supports JPG, PNG, WEBP (Multiple allowed)</p>
+              <input type="file" accept="image/*" multiple className="hidden" onChange={handleImageChange} />
+            </label>
           </div>
         </div>
 
@@ -175,7 +186,7 @@ export default function AddProduct() {
                 <label className="text-sm font-bold text-gray-700 dark:text-gray-300 ml-1">Base Price</label>
                 <div className="relative">
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                    <span className="text-gray-500 font-bold">$</span>
+                    <span className="text-gray-500 font-bold">Rs</span>
                   </div>
                   <input
                     type="number" step="0.01" value={price} onChange={e => setPrice(e.target.value)} required

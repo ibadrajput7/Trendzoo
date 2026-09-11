@@ -7,11 +7,17 @@ export const createProduct = async (req, res) => {
   try {
     const { name, description, price, stock, categoryId, status } = req.body;
     let imageUrl = null;
+    let images = [];
 
-    if (req.file) {
-      const cloudinaryResponse = await uploadOnCloudinary(req.file.path);
-      if (cloudinaryResponse) {
-        imageUrl = cloudinaryResponse.url;
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const cloudinaryResponse = await uploadOnCloudinary(file.path);
+        if (cloudinaryResponse) {
+          images.push(cloudinaryResponse.url);
+        }
+      }
+      if (images.length > 0) {
+        imageUrl = images[0];
       }
     }
 
@@ -23,6 +29,7 @@ export const createProduct = async (req, res) => {
         stock: parseInt(stock, 10) || 0,
         status: status || "Active",
         imageUrl,
+        images,
         categoryId: parseInt(categoryId, 10),
       },
     });
@@ -64,11 +71,18 @@ export const updateProduct = async (req, res) => {
     const { id } = req.params;
     const { name, description, price, stock, categoryId, status } = req.body;
     let imageUrl = undefined;
+    let images = undefined;
 
-    if (req.file) {
-      const cloudinaryResponse = await uploadOnCloudinary(req.file.path);
-      if (cloudinaryResponse) {
-        imageUrl = cloudinaryResponse.url;
+    if (req.files && req.files.length > 0) {
+      images = [];
+      for (const file of req.files) {
+        const cloudinaryResponse = await uploadOnCloudinary(file.path);
+        if (cloudinaryResponse) {
+          images.push(cloudinaryResponse.url);
+        }
+      }
+      if (images.length > 0) {
+        imageUrl = images[0];
       }
     }
 
@@ -82,6 +96,7 @@ export const updateProduct = async (req, res) => {
         ...(status && { status }),
         ...(categoryId && { categoryId: parseInt(categoryId, 10) }),
         ...(imageUrl && { imageUrl }),
+        ...(images && { images }),
       },
     });
 
