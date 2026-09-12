@@ -9,11 +9,14 @@ import TestimonialSlider from '../components/TestimonialSlider';
 import VideoSlider from '../components/VideoSlider';
 import CtaSection from '../components/CtaSection';
 import Newsletter from '../components/Newsletter';
+import FeaturedBrands from '../components/FeaturedBrands';
+import InstagramFeed from '../components/InstagramFeed';
 
 export default function Home() {
   return (
     <div className="bg-background dark:bg-background-dark min-h-screen overflow-hidden">
       <Hero />
+      <FeaturedBrands />
       <FeaturesRow />
       <CategoryShowcase />
       <PromoBanners />
@@ -21,6 +24,7 @@ export default function Home() {
       <TestimonialSlider />
       <TopCategories />
       <VideoSlider />
+      <InstagramFeed />
       <CtaSection />
       <Newsletter />
     </div>

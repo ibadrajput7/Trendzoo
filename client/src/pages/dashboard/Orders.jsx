@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, ChevronRight, Loader2 } from 'lucide-react';
+import Loader from '../../components/Loader';
 
 const API_URL = import.meta.env.VITE_BACKEND_URL + '/api/v1/orders';
 
@@ -43,11 +44,7 @@ export default function Orders() {
   };
 
   if (loading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <Loader fullScreen={true} text="Loading orders..." />;
   }
 
   return (

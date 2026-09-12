@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Edit2, Trash2, Loader2, Image as ImageIcon, UploadCloud } from 'lucide-react';
 import EditModal from '../../components/EditModal';
+import Loader from '../../components/Loader';
 
 const API_URL_PRODUCTS = import.meta.env.VITE_BACKEND_URL + '/api/v1/products';
 const API_URL_CATEGORIES = import.meta.env.VITE_BACKEND_URL + '/api/v1/categories';
@@ -123,7 +124,7 @@ export default function ViewProducts() {
   };
 
   if (loading) {
-    return <div className="flex justify-center p-12"><Loader2 className="animate-spin text-primary" size={32} /></div>;
+    return <Loader fullScreen={true} text="Loading products..." />;
   }
 
   return (

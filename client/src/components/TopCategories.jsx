@@ -1,18 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { Image as ImageIcon } from 'lucide-react';
 
-const topCategories = [
-  { name: 'iPhone Accessories', imgUrl: 'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=300&q=80' },
-  { name: 'Audio & Earbuds', imgUrl: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=300&q=80' },
-  { name: 'Gaming Gadgets', imgUrl: 'https://images.unsplash.com/photo-1593118247619-e2d6f056869e?w=300&q=80' },
-  { name: 'Wearables', imgUrl: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=300&q=80' },
-  { name: 'Photography', imgUrl: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300&q=80' },
-  { name: 'Car Accessories', imgUrl: 'https://images.unsplash.com/photo-1600705353592-7489814421b4?w=300&q=80' },
-  { name: 'Office Essentials', imgUrl: 'https://images.unsplash.com/photo-1505330622279-bf7d7fc918f4?w=300&q=80' },
-];
+const API_URL = import.meta.env.VITE_BACKEND_URL + '/api/v1/categories';
 
 export default function TopCategories() {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        if (data.success) {
+          // Sort categories by number of products descending
+          const sorted = data.data.sort((a, b) => {
+            const countA = a._count?.products || 0;
+            const countB = b._count?.products || 0;
+            return countB - countA;
+          });
+          setCategories(sorted.slice(0, 7)); // Take top 7
+        }
+      } catch (err) {
+        console.error("Failed to load top categories");
+      }
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <section className="py-20 mb-10 relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[300px] bg-gradient-to-r from-primary/5 via-purple-500/5 to-transparent -z-10 skew-y-3"></div>
@@ -40,8 +56,8 @@ export default function TopCategories() {
         </div>
 
         <div className="flex flex-wrap justify-center gap-8 md:gap-12">
-          {topCategories.map((cat, index) => (
-            <Link key={cat.name} to={`/category/${cat.name.toLowerCase().replace(/ /g, '-')}`}>
+          {categories.map((cat, index) => (
+            <Link key={cat.id} to={`/shop?category=${cat.name.toLowerCase()}`}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
@@ -49,12 +65,16 @@ export default function TopCategories() {
                 transition={{ duration: 0.5, delay: index * 0.1, type: "spring", stiffness: 100 }}
                 className="group flex flex-col items-center cursor-pointer"
               >
-                <div className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden mb-5 group-hover:scale-110 transition-transform duration-500 shadow-xl shadow-gray-200 dark:shadow-black/40 border-4 border-white dark:border-gray-800 group-hover:border-primary/50 relative">
-                  <img 
-                    src={cat.imgUrl} 
-                    alt={cat.name} 
-                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
-                  />
+                <div className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden mb-5 group-hover:scale-110 transition-transform duration-500 shadow-xl shadow-gray-200 dark:shadow-black/40 border-4 border-white dark:border-gray-800 group-hover:border-primary/50 relative flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+                  {cat.imageUrl ? (
+                    <img 
+                      src={cat.imageUrl} 
+                      alt={cat.name} 
+                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out absolute inset-0"
+                    />
+                  ) : (
+                    <ImageIcon className="text-gray-400 w-1/3 h-1/3" />
+                  )}
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-300"></div>
                 </div>
                 <h4 className="font-bold text-sm md:text-base text-gray-900 dark:text-white group-hover:text-primary transition-colors max-w-[120px] leading-snug">

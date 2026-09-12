@@ -57,8 +57,12 @@ export default function CategoryShowcase() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5, delay: index * 0.05, type: "spring", stiffness: 120 }}
-              className="flex flex-col items-center group cursor-pointer"
+              className="relative"
             >
+              <Link 
+                to={`/shop?category=${cat.name.toLowerCase()}`}
+                className="flex flex-col items-center group cursor-pointer"
+              >
               <div className="w-full aspect-square rounded-3xl overflow-hidden mb-4 relative shadow-lg group-hover:shadow-xl group-hover:shadow-primary/20 transition-all duration-500 border-2 border-transparent group-hover:border-primary/50 bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                 {cat.imageUrl ? (
                   <img 
@@ -72,8 +76,12 @@ export default function CategoryShowcase() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
               <h4 className="font-bold text-gray-900 dark:text-white text-sm md:text-base group-hover:text-primary transition-colors">{cat.name}</h4>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">{cat._count?.products || 0} Products</p>
-            </motion.div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 mb-3 font-medium">{cat._count?.products || 0} Products</p>
+              <span className="bg-primary text-white font-bold text-xs px-5 py-2 rounded-full shadow-md hover:bg-primary/90 transition-colors">
+                View Category
+              </span>
+            </Link>
+          </motion.div>
           ))}
         </div>
 

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Star, ShoppingCart, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import Loader from './Loader';
 
 const API_URL = import.meta.env.VITE_BACKEND_URL + '/api/v1/products';
 
 export default function ProductGrid() {
   const [products, setProducts] = useState([]);
   const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -89,23 +91,32 @@ export default function ProductGrid() {
                     {product.name}
                   </h4>
                 </Link>
-                <div className="mt-auto flex items-center justify-between">
+                <div className="mt-auto flex flex-col space-y-3">
                   <div className="flex items-baseline space-x-2">
                     <span className="font-black text-xl text-gray-900 dark:text-white">Rs {parseFloat(product.price).toFixed(2)}</span>
                   </div>
-                  <button 
-                    onClick={() => addToCart(product)}
-                    className="md:hidden w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/30"
-                  >
-                    <ShoppingCart className="w-4 h-4" />
-                  </button>
+                  <div className="flex gap-2 w-full">
+                    <button 
+                      onClick={(e) => { e.preventDefault(); addToCart(product); }}
+                      className="flex-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-bold py-2 rounded-xl transition-colors text-xs flex items-center justify-center"
+                    >
+                      <ShoppingCart className="w-3.5 h-3.5 mr-1.5" />
+                      Cart
+                    </button>
+                    <button 
+                      onClick={(e) => { e.preventDefault(); addToCart(product); navigate('/checkout'); }}
+                      className="flex-1 bg-primary hover:bg-primary/90 text-white font-bold py-2 rounded-xl transition-colors text-xs shadow-lg shadow-primary/30"
+                    >
+                      Buy Now
+                    </button>
+                  </div>
                 </div>
               </div>
             </motion.div>
           ))}
           {products.length === 0 && (
-            <div className="col-span-full py-12 text-center text-gray-500">
-              Loading products...
+            <div className="col-span-full">
+              <Loader text="Loading products..." />
             </div>
           )}
         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import Loader from '../components/Loader';
 
 const API_URL = import.meta.env.VITE_BACKEND_URL + '/api/v1/categories';
 
@@ -37,9 +38,7 @@ export default function Categories() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-        </div>
+        <Loader text="Loading categories..." />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           {categories.map((cat, index) => (
@@ -60,10 +59,15 @@ export default function Categories() {
                   <h3 className="text-3xl font-black text-white tracking-wider mb-2">{cat.name}</h3>
                   <div className="w-12 h-1 bg-primary rounded-full transition-all duration-300 group-hover:w-24"></div>
                   {cat.description && (
-                    <p className="mt-4 text-sm font-medium text-white/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
+                    <p className="mt-4 text-sm font-medium text-white/80">
                       {cat.description}
                     </p>
                   )}
+                  <div className="mt-6">
+                    <span className="inline-block bg-primary text-white font-bold px-6 py-2 rounded-full shadow-lg shadow-primary/30 text-sm hover:bg-primary/90 transition-colors">
+                      Explore Category
+                    </span>
+                  </div>
                 </div>
               </motion.div>
             </Link>
