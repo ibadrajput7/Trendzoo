@@ -9,7 +9,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -17,9 +17,9 @@ export default function Login() {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-    
+
     const result = await login(email, password);
-    
+
     if (result.success) {
       navigate('/dashboard');
     } else {
@@ -30,21 +30,21 @@ export default function Login() {
 
   return (
     <div className="flex min-h-[calc(100vh-80px)] items-center justify-center p-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-md"
+        className="w-full max-w-sm"
       >
         <div className="relative overflow-hidden rounded-3xl border border-gray-200 bg-white/50 p-6 sm:p-8 shadow-2xl backdrop-blur-xl dark:border-gray-800 dark:bg-gray-900/50">
-          
+
           {/* Subtle background glow */}
           <div className="absolute -top-32 -left-32 h-64 w-64 rounded-full bg-primary/20 blur-3xl"></div>
           <div className="absolute -bottom-32 -right-32 h-64 w-64 rounded-full bg-pink-500/20 blur-3xl"></div>
-          
+
           <div className="relative z-10">
             <div className="mb-8 text-center">
-              <motion.h1 
+              <motion.h1
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -56,7 +56,7 @@ export default function Login() {
             </div>
 
             {error && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 className="mb-6 rounded-xl bg-red-50 p-4 text-sm text-red-500 dark:bg-red-500/10 dark:text-red-400"
@@ -78,7 +78,7 @@ export default function Login() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     className="w-full rounded-2xl border border-gray-200 bg-white/50 px-4 py-3 pl-11 text-gray-900 placeholder-gray-400 outline-none transition-all focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 dark:border-gray-700 dark:bg-gray-800/50 dark:text-white dark:focus:border-primary dark:focus:bg-gray-800"
-                    placeholder="admin@example.com"
+                    placeholder="abc@example.com"
                   />
                 </div>
               </div>
@@ -118,12 +118,6 @@ export default function Login() {
               </motion.button>
             </form>
 
-            <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-              Don't have an account?{' '}
-              <Link to="/signup" className="font-semibold text-primary transition-colors hover:text-primary-hover dark:text-primary">
-                Register here
-              </Link>
-            </p>
           </div>
         </div>
       </motion.div>
