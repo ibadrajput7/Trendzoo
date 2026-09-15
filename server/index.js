@@ -33,6 +33,7 @@ app.use('/api/v1/orders', orderRouter);
 
 const PORT = process.env.PORT || 5000;
 
+console.log("STARTING SERVER - PORT:", PORT);
 connectDB().then(() => {
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
