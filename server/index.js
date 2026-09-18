@@ -40,7 +40,17 @@ app.get("/api/health", (req, res) => {
     });
 });
 
-// Connect database
+// Database connection
 await connectDB();
 
+// Local development server
+if (!process.env.VERCEL) {
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
+
+// Export Express app for Vercel
 export default app;
