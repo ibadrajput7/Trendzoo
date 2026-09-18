@@ -3,39 +3,44 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-dotenv.config({
-    path: './.env'
-})
+import authRouter from "./routes/auth.routes.js";
+import categoryRouter from "./routes/category.routes.js";
+import productRouter from "./routes/product.routes.js";
+import orderRouter from "./routes/order.routes.js";
 
-const app = express()
+import { connectDB } from "./config/db.js";
 
-app.use(cors({
-    origin: process.env.CLIENT_URL,
-    credentials: true
-}))
+dotenv.config();
 
-app.use(express.json({limit: "16kb"}))
-app.use(express.urlencoded({extended: true, limit: "16kb"}))
-app.use(express.static("public"))
-app.use(cookieParser())
+const app = express();
+
+app.use(
+    cors({
+        origin: process.env.CLIENT_URL,
+        credentials: true,
+    })
+);
+
+app.use(express.json({ limit: "16kb" }));
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(express.static("public"));
+app.use(cookieParser());
 
 // Routes
-import authRouter from './routes/auth.routes.js';
-import categoryRouter from './routes/category.routes.js';
-import productRouter from './routes/product.routes.js';
-import orderRouter from './routes/order.routes.js';
-import { connectDB } from "./config/db.js"
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/categories", categoryRouter);
+app.use("/api/v1/products", productRouter);
+app.use("/api/v1/orders", orderRouter);
 
-app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/categories', categoryRouter);
-app.use('/api/v1/products', productRouter);
-app.use('/api/v1/orders', orderRouter);
+// Health check
+app.get("/api/health", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Shopping API is running",
+    });
+});
 
-const PORT = process.env.PORT || 5000;
+// Connect database
+await connectDB();
 
-console.log("STARTING SERVER - PORT:", PORT);
-connectDB().then(() => {
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-    })
-})
+export default app;
