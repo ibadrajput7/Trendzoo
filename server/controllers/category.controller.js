@@ -9,7 +9,10 @@ export const createCategory = async (req, res) => {
     let imageUrl = null;
 
     if (req.file) {
-      const cloudinaryResponse = await uploadOnCloudinary(req.file.path);
+      const cloudinaryResponse = await uploadOnCloudinary(
+    req.file.buffer,
+    req.file.originalname
+);
       if (cloudinaryResponse) {
         imageUrl = cloudinaryResponse.url;
       }
@@ -44,7 +47,10 @@ export const updateCategory = async (req, res) => {
     let imageUrl = undefined;
 
     if (req.file) {
-      const cloudinaryResponse = await uploadOnCloudinary(req.file.path);
+      const cloudinaryResponse = await uploadOnCloudinary(
+    req.file.buffer,
+    req.file.originalname
+);
       if (cloudinaryResponse) {
         imageUrl = cloudinaryResponse.url;
       }
